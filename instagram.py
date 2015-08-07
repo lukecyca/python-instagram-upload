@@ -7,10 +7,15 @@ import json
 import hashlib
 import time
 
-
+try:
+    # python 2
+    urllib_quote_plus = urllib.quote
+except:
+    # python 3
+    urllib_quote_plus = urllib.parse.quote_plus
 
 def _generate_signature(data):
-    return hmac.new('b4a23f5e39b5929e0666ac5de94c89d1618a2916', data, hashlib.sha256).hexdigest()
+    return hmac.new('b4a23f5e39b5929e0666ac5de94c89d1618a2916'.encode('utf-8'), data.encode('utf-8'), hashlib.sha256).hexdigest()
 
 
 def _generate_user_agent():
@@ -56,18 +61,18 @@ class InstagramSession(object):
             "password": password,
             "Content-Type": "application/x-www-form-urlencoded; charset=UTF-8"
         })
-        print data
+        print(data)
 
         sig = _generate_signature(data)
 
         payload = 'signed_body={}.{}&ig_sig_key_version=4'.format(
             sig,
-            urllib.quote_plus(data)
+            urllib_quote_plus(data)
         )
 
         r = self.session.post("https://instagram.com/api/v1/accounts/login/", payload)
         r_json = r.json()
-        print r_json
+        print(r_json)
 
         if r_json.get('status') != "ok":
             return False
@@ -84,7 +89,7 @@ class InstagramSession(object):
 
         r = self.session.post("https://instagram.com/api/v1/media/upload/", data, files=files)
         r_json = r.json()
-        print r_json
+        print(r_json)
 
         return r_json.get('media_id')
 
@@ -100,18 +105,18 @@ class InstagramSession(object):
             "extra": "{}",
             "Content-Type": "application/x-www-form-urlencoded; charset=UTF-8"
         })
-        print data
+        print(data)
 
         sig = _generate_signature(data)
 
         payload = 'signed_body={}.{}&ig_sig_key_version=4'.format(
             sig,
-            urllib.quote_plus(data)
+            urllib_quote_plus(data)
         )
 
         r = self.session.post("https://instagram.com/api/v1/media/configure/", payload)
         r_json = r.json()
-        print r_json
+        print(r_json)
 
         if r_json.get('status') != "ok":
             return False
