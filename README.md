@@ -1,3 +1,5 @@
+***Important: this library no longer works. The API calls we were using have been deprecated by Instagram. Sorry.***
+
 # python-instagram-upload #
 
 Upload and post photos to [Instagram](http://instagram.com) with Python!
